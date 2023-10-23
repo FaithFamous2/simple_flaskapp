@@ -5,7 +5,7 @@ import random
 app = Flask(__name__)
 
 locations = ["at the beach 🏖⛱", "in a theme park ⛲🏞", "on a remote island🏝☪",
-             "in a space station🛰🌌", "under the sea🌊⛵", "my Room 🏚"]
+             "in a space station🛰🌌", "under the sea🌊⛵", "my Roo mmmm🏚"]
 
 
 def save_name_to_file(name):
@@ -18,10 +18,21 @@ def get_saved_names():
         return file.read()
 
 
+def save_names_location_to_file(name, random_locations):
+    with open('birthday.txt', 'a', encoding='utf-8') as file:
+        file.write(f"Name: {name}, Location: {random_locations}\n")
+
+
+def get_saved_names_location():
+    with open('birthday.txt', 'r', encoding='utf-8') as file:
+        return file.read()
+
+
 def generate_locations(name):
     random_locations = random.choice(locations)
     save_name_to_file(name)
-    joke = f"Thank you🙇‍♀️ {name}!! for accepting my invites, Birthday party will be at this Location ✅ {random_locations.upper()}. ✅Do have Great time at the party!"
+    save_names_location_to_file(name, random_locations)
+    joke = f"Thank you🙇‍♀️ {name.upper()}!! for accepting my invites, Birthday party will be at this Location ✅ {random_locations.upper()}. ✅Do have Great time at the party!"
     return joke
 
 
@@ -40,5 +51,17 @@ def birthday_jokes():
     return render_template('famouz_birthday.html', joke=joke, names=names)
 
 
+@app.route('/view_usernames')
+def view_usernames():
+    try:
+        with open('birthday.txt', 'r') as file:
+            usernames = file.read()
+        return render_template('view_usernames.html', usernames=usernames)
+    except FileNotFoundError:
+        return "The usernames file does not exist."
+
+
 if __name__ == '__main__':
-    serve(app, host="0.0.0.0", port=8080)
+    app.run(host='0.0.0.0', port=8080)
+
+    # serve(app, host="0.0.0.0", port=8080)
